@@ -133,7 +133,7 @@ function renderCredentials(data) {
       <td>${item.site}</td>
       <td>${item.siteUsername}</td>
       <td>
-        <button class="action-btn" onclick="sendPassword('${item.id}')">Send Password to Email</button>
+        <button class="action-btn" onclick="sendPassword('${item.id}')">Get Password</button>
         <button class="delete-btn" onclick="deleteCredential('${item.id}')">Delete</button>
       </td>
     `;
