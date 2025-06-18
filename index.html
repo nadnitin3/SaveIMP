@@ -9,47 +9,261 @@
   <script src="https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore-compat.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/modern-normalize/2.0.0/modern-normalize.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    body { font-family: Arial, sans-serif; padding: 20px; background: #f0f4f8; }
-    .container { max-width: 600px; margin: auto; background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-    h2 { text-align: center; }
-    label { display: block; margin-top: 10px; font-weight: bold; }
-    input { width: 100%; padding: 8px; margin-top: 5px; border-radius: 6px; border: 1px solid #ccc; }
-    button { margin-top: 15px; padding: 10px; width: 100%; background: #007bff; color: #fff; border: none; border-radius: 6px; cursor: pointer; }
-    button:hover { background: #0056b3; }
-    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-    th, td { padding: 10px; border: 1px solid #ddd; text-align: left; }
-    th { background: #007bff; color: #fff; }
-    .action-btn { background: #28a745; margin-right: 5px; }
-    .delete-btn { background: #dc3545; }
-    #search { margin-top: 15px; }
-    #userEmail { float: right; margin-top: 10px; font-size: 14px; color: #333; }
+    :root {
+      --primary-color: #007bff;
+      --primary-hover: #0056b3;
+      --secondary-color: #28a745;
+      --delete-color: #dc3545;
+      --text-color: #333;
+      --bg-color: #f0f4f8;
+      --card-bg: rgba(255, 255, 255, 0.95);
+      --shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      --border-radius: 12px;
+      --transition: all 0.3s ease;
+    }
+
+    [data-theme="dark"] {
+      --primary-color: #1e90ff;
+      --primary-hover: #1c86ee;
+      --secondary-color: #2ecc71;
+      --delete-color: #e74c3c;
+      --text-color: #ecf0f1;
+      --bg-color: #2c3e50;
+      --card-bg: rgba(44, 62, 80, 0.95);
+      --shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, var(--bg-color), #d6e6ff);
+      min-height: 100vh;
+      padding: 20px;
+      color: var(--text-color);
+      transition: var(--transition);
+    }
+
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      padding: 30px;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      position: relative;
+    }
+
+    h2 {
+      text-align: center;
+      font-weight: 600;
+      margin-bottom: 20px;
+      color: var(--primary-color);
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: 500;
+      color: var(--text-color);
+    }
+
+    .input-group {
+      position: relative;
+      margin-top: 10px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px 40px 12px 45px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 16px;
+      transition: var(--transition);
+      background: rgba(255, 255, 255, 0.8);
+      color: var(--text-color);
+    }
+
+    input:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
+    }
+
+    .input-group i {
+      position: absolute;
+      top: 50%;
+      left: 15px;
+      transform: translateY(-50%);
+      color: #999;
+      font-size: 18px;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 12px;
+      width: 100%;
+      background: linear-gradient(90deg, var(--primary-color), #00c4ff);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    button:hover {
+      background: linear-gradient(90deg, var(--primary-hover), #00b4e4);
+      transform: translateY(-2px);
+    }
+
+    .action-btn {
+      background: var(--secondary-color);
+      padding: 8px 12px;
+      width: auto;
+      margin-right: 5px;
+    }
+
+    .action-btn:hover {
+      background: #218838;
+    }
+
+    .delete-btn {
+      background: var(--delete-color);
+      padding: 8px 12px;
+      width: auto;
+    }
+
+    .delete-btn:hover {
+      background: #c82333;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background: var(--card-bg);
+      border-radius: var(--border-radius);
+      overflow: hidden;
+    }
+
+    th, td {
+      padding: 15px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+
+    th {
+      background: var(--primary-color);
+      color: #fff;
+      font-weight: 600;
+    }
+
+    tr:hover {
+      background: rgba(0, 123, 255, 0.1);
+    }
+
+    #search {
+      margin-top: 20px;
+      padding-left: 45px;
+      background: url('https://img.icons8.com/ios-filled/24/999999/search.png') no-repeat 15px center;
+      background-size: 20px;
+    }
+
+    #userEmail {
+      float: right;
+      margin-top: 10px;
+      font-size: 14px;
+      color: var(--text-color);
+      font-weight: 500;
+    }
+
+    .theme-toggle {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      color: var(--text-color);
+      transition: var(--transition);
+    }
+
+    .loader {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid var(--primary-color);
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 500px) {
+      .container {
+        padding: 20px;
+      }
+      input, button {
+        font-size: 14px;
+      }
+      th, td {
+        padding: 10px;
+      }
+    }
   </style>
 </head>
 <body>
+  <div class="loader" id="loader"></div>
   <div class="container">
+    <button class="theme-toggle" onclick="toggleTheme()">
+      <i class="fas fa-moon"></i>
+    </button>
     <h2>Secure Password Manager</h2>
     
     <div id="loginDiv">
-      <label>Email:</label>
-      <input type="email" id="email" />
-      <label>Password:</label>
-      <input type="password" id="password" />
+      <div class="input-group">
+        <i class="fas fa-envelope"></i>
+        <input type="email" id="email" placeholder="Enter your email" />
+      </div>
+      <div class="input-group">
+        <i class="fas fa-lock"></i>
+        <input type="password" id="password" placeholder="Enter your password" />
+      </div>
       <button onclick="login()">Login</button>
     </div>
 
     <div id="formDiv" style="display:none;">
       <div id="userEmail"></div>
-      <label>Site:</label>
-      <input type="text" id="site" />
-      <label>Site Username:</label>
-      <input type="text" id="siteUsername" />
-      <label>Password:</label>
-      <input type="text" id="sitePassword" />
+      <div class="input-group">
+        <i class="fas fa-globe"></i>
+        <input type="text" id="site" placeholder="Enter site URL" />
+      </div>
+      <div class="input-group">
+        <i class="fas fa-user"></i>
+        <input type="text" id="siteUsername" placeholder="Enter site username" />
+      </div>
+      <div class="input-group">
+        <i class="fas fa-lock"></i>
+        <input type="text" id="sitePassword" placeholder="Enter site password" />
+      </div>
       <button onclick="saveCredential()">Save</button>
       <button onclick="logout()">Logout</button>
 
-      <input type="text" id="search" placeholder="Search by Site or Username" oninput="filterCredentials()" />
+      <div class="input-group">
+        <input type="text" id="search" placeholder="Search by Site or Username" oninput="filterCredentials()" />
+      </div>
 
       <table>
         <thead>
@@ -63,6 +277,26 @@
       </table>
     </div>
   </div>
+
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', newTheme);
+      const icon = document.querySelector('.theme-toggle i');
+      icon.className = newTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+      localStorage.setItem('theme', newTheme);
+    }
+
+    // Load saved theme
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+      document.documentElement.setAttribute('data-theme', savedTheme);
+      const icon = document.querySelector('.theme-toggle i');
+      icon.className = savedTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+    }
+  </script>
   <script src="main.js"></script>
 </body>
 </html>
