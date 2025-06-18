@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Secure Password Manager</title>
+  <script src="https://www.gstatic.com/firebasejs/11.9.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/11.9.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore-compat.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/modern-normalize/2.0.0/modern-normalize.min.css" />
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background: #f0f4f8; }
+    .container { max-width: 600px; margin: auto; background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    h2 { text-align: center; }
+    label { display: block; margin-top: 10px; font-weight: bold; }
+    input { width: 100%; padding: 8px; margin-top: 5px; border-radius: 6px; border: 1px solid #ccc; }
+    button { margin-top: 15px; padding: 10px; width: 100%; background: #007bff; color: #fff; border: none; border-radius: 6px; cursor: pointer; }
+    button:hover { background: #0056b3; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { padding: 10px; border: 1px solid #ddd; text-align: left; }
+    th { background: #007bff; color: #fff; }
+    .action-btn { background: #28a745; margin-right: 5px; }
+    .delete-btn { background: #dc3545; }
+    #search { margin-top: 15px; }
+    #userEmail { float: right; margin-top: 10px; font-size: 14px; color: #333; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Secure Password Manager</h2>
+    
+    <div id="loginDiv">
+      <label>Email:</label>
+      <input type="email" id="email" />
+      <label>Password:</label>
+      <input type="password" id="password" />
+      <button onclick="login()">Login</button>
+    </div>
+
+    <div id="formDiv" style="display:none;">
+      <div id="userEmail"></div>
+      <label>Site:</label>
+      <input type="text" id="site" />
+      <label>Site Username:</label>
+      <input type="text" id="siteUsername" />
+      <label>Password:</label>
+      <input type="text" id="sitePassword" />
+      <button onclick="saveCredential()">Save</button>
+      <button onclick="logout()">Logout</button>
+
+      <input type="text" id="search" placeholder="Search by Site or Username" oninput="filterCredentials()" />
+
+      <table>
+        <thead>
+          <tr>
+            <th>Site</th>
+            <th>Site Username</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="credentialsTable"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script src="main.js"></script>
+</body>
+</html>
