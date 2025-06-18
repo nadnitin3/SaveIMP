@@ -13,8 +13,10 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
 
+// Set session persistence to SESSION
+auth.setPersistence(firebase.auth.Auth.Persistence.SESSION);
+
 let sessionTimer;
-let warningTimer;
 let credentialsData = []; // Store credentials for filtering
 
 async function getSecretKey() {
@@ -50,34 +52,24 @@ function logout() {
     document.getElementById('loginDiv').style.display = 'block';
     document.getElementById('formDiv').style.display = 'none';
     document.getElementById('userEmail').textContent = '';
+    document.getElementById('email').value = ''; // Clear email field
+    document.getElementById('password').value = ''; // Clear password field
     clearTimeout(sessionTimer);
-    clearTimeout(warningTimer);
     credentialsData = [];
   });
 }
 
 function startSessionTimer() {
   clearTimeout(sessionTimer);
-  clearTimeout(warningTimer);
-
-  // Warning 30 seconds before session expires
-  warningTimer = setTimeout(() => {
-    if (confirm('Your session will expire in 30 seconds. Do you want to renew it?')) {
-      renewSession();
-    }
-  }, 4 * 60 * 1000); // 4 minutes (5 minutes - 30 seconds)
-
   sessionTimer = setTimeout(() => {
-    alert('Session expired. Please login again.');
-    logout();
+    if (confirm('Your session has expired. Do you want to renew it?')) {
+      startSessionTimer(); // Renew session
+      alert('Session renewed successfully!');
+    } else {
+      alert('Session expired. Please login again.');
+      logout();
+    }
   }, 5 * 60 * 1000); // 5 minutes
-}
-
-function renewSession() {
-  clearTimeout(sessionTimer);
-  clearTimeout(warningTimer);
-  startSessionTimer();
-  alert('Session renewed successfully!');
 }
 
 async function saveCredential() {
@@ -199,6 +191,13 @@ function deleteCredential(id) {
 }
 
 window.onload = () => {
+  document.getElementById('loginDiv').style.display = 'block';
+  document.getElementById('formDiv').style.display = 'none';
+  document.getElementById('userEmail').textContent = '';
+  document.getElementById('email').value = ''; // Clear email field
+  document.getElementById('password').value = ''; // Clear password field
+  credentialsData = [];
+
   auth.onAuthStateChanged(user => {
     if (user) {
       document.getElementById('loginDiv').style.display = 'none';
@@ -210,6 +209,8 @@ window.onload = () => {
       document.getElementById('loginDiv').style.display = 'block';
       document.getElementById('formDiv').style.display = 'none';
       document.getElementById('userEmail').textContent = '';
+      document.getElementById('email').value = ''; // Clear email field
+      document.getElementById('password').value = ''; // Clear password field
       credentialsData = [];
     }
   });
